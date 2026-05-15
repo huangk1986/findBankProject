@@ -14,7 +14,7 @@ language:
   - Python
 
 # 最低 Star 数（通过 API 查询参数传递）
-min_stars: 100
+min_stars: 10
 
 # 最近更新时间（通过 API 查询参数传递）
 # 格式: YYYY-MM-DD
