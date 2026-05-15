@@ -18,7 +18,7 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # 获取完整历史，确保 rebase 可用
 
       - name: 安装 Python
         uses: actions/setup-python@v5
@@ -42,6 +42,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          # 关键：checkout 默认处于 detached HEAD，
+          # 必须切换到分支再操作，否则 commit 不会更新 refs/heads/main
+          git checkout main
+
+          # 先拉取远程最新，避免冲突
+          git pull --rebase origin main
+
           git add results/ docs/
 
           # 仅在有变更时提交
@@ -49,7 +56,5 @@ jobs:
             echo "无变更，跳过提交"
           else
             git commit -m "docs: 更新搜索结果 ($(date +%Y-%m-%d))"
-            # push 冲突时先 pull --rebase 再重试
-            git pull --rebase origin main || true
             git push origin main
           fi
