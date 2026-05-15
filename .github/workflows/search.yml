@@ -18,14 +18,15 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取完整历史，确保 rebase 可用
+          fetch-depth: 0
+          ref: main  # 明确指定分支，避免 detached HEAD 导致的后续问题
 
       - name: 同步远程最新
         run: |
-          # checkout 默认处于 detached HEAD，须切回分支
-          git checkout main
-          # 拉取远程最新，确保工作区干净且无冲突
-          git pull --rebase origin main
+          # 强制对齐本地到远程最新状态（不用 rebase，避免残留冲突）
+          git fetch origin main
+          git reset --hard origin/main
+          echo "已同步至: $(git rev-parse --short HEAD)"
 
       - name: 安装 Python
         uses: actions/setup-python@v5
@@ -51,10 +52,10 @@ jobs:
 
           git add results/ docs/
 
-          # 仅在有变更时提交
           if git diff --cached --quiet; then
             echo "无变更，跳过提交"
           else
             git commit -m "docs: 更新搜索结果 ($(date +%Y-%m-%d))"
-            git push origin main
+            # 直推；若远程领先（极端并发场景），用 force-with-lease 兜底
+            git push origin main || git push --force-with-lease origin main
           fi
