@@ -7,6 +7,11 @@ on:
   workflow_dispatch:
     # 手动触发
 
+# 同一时刻只允许一个搜索工作流运行，后续排队等待
+concurrency:
+  group: github-search
+  cancel-in-progress: false
+
 permissions:
   contents: write  # 用于 git push 提交结果
 
@@ -55,7 +60,24 @@ jobs:
           if git diff --cached --quiet; then
             echo "无变更，跳过提交"
           else
-            git commit -m "docs: 更新搜索结果 ($(date +%Y-%m-%d))"
-            # 直推；若远程领先（极端并发场景），用 force-with-lease 兜底
-            git push origin main || git push --force-with-lease origin main
+            COMMIT_MSG="docs: 更新搜索结果 ($(date +%Y-%m-%d))"
+            git commit -m "$COMMIT_MSG"
+
+            # 推送前重新拉取远程最新，避免并发时本地追踪引用过期
+            git fetch origin main
+
+            if git push origin main; then
+              echo "直推成功"
+            else
+              # 远程领先：将本机提交重放到远程最新之上
+              # --strategy-option theirs：冲突时取本机版本（rebase 语义中 theirs=本机）
+              if git rebase --strategy-option theirs origin/main; then
+                git push origin main
+              else
+                # rebase 仍冲突（如 add/add），回退后强制推送
+                git rebase --abort
+                echo "[WARN] rebase 冲突，使用 force-with-lease 推送"
+                git push --force-with-lease origin main
+              fi
+            fi
           fi
