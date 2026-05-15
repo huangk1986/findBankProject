@@ -1,0 +1,41 @@
+# GitHub 金融开源项目搜索配置
+# 修改后提交即生效，下次运行按新条件执行
+
+# 搜索关键词列表（OR 语义组合，仓库描述中含任一关键词即命中）
+keywords:
+  - banking
+  - fintech
+  - financial
+
+# 编程语言列表（GitHub API 仅支持单一语言，
+# 脚本遍历每种语言分别搜索，再合并去重）
+language:
+  - Java
+  - Python
+
+# 最低 Star 数（通过 API 查询参数传递）
+min_stars: 100
+
+# 最近更新时间（通过 API 查询参数传递）
+# 格式: YYYY-MM-DD
+pushed_after: "2026-01-01"
+
+# 仓库创建时间下限（可选过滤，本期默认不启用）
+# 格式: YYYY-MM-DD，注释或删掉则不过滤
+# created_after: "2025-01-01"
+
+# 结果排序方式（stars / updated / forks / help-wanted-issues）
+sort_by: stars
+
+# 最大分页数（每页 100 条），本期上限 300 条
+max_pages: 3
+
+# 二次关键词匹配数筛选
+# 描述中至少包含 N 个关键词的仓库（默认 1，即不过滤）
+min_keyword_matches: 1
+
+# 结果输出目录
+output_dir: results/
+
+# GitHub Pages 源目录
+docs_dir: docs/
