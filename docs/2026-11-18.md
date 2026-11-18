@@ -1,6 +1,6 @@
 # GitHub 金融开源项目搜索报告
 
-- **搜索时间**：2026-11-18 00:03 UTC
+- **搜索时间**：2026-11-18 23:38 UTC
 - **触发方式**：SCHEDULED
 - **搜索条件**：关键词=banking+fintech+financial | 语言=Java,Python | 最低Star=10 | 排序=stars | 关键词匹配数≥1
 - **数据统计**：去重后 0 条
@@ -8,4 +8,4 @@
 
 本次搜索无符合条件的结果。
 
-> 生成时间：2026-11-18 08:03 北京时间 | 搜索工具：[findBankProject](https://github.com/huangk1986/findBankProject)
+> 生成时间：2026-11-19 07:38 北京时间 | 搜索工具：[findBankProject](https://github.com/huangk1986/findBankProject)
